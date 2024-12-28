@@ -36,46 +36,10 @@ SRTPLib srtp;
 
 DWORD RTPTransport::minLocalPort = 0;
 DWORD RTPTransport::maxLocalPort = 0;
-int RTPTransport::minLocalPortRange = 50;
+int RTPTransport::minLocalPortRange = 0;
 
 bool RTPTransport::SetPortRange(int minPort, int maxPort)
 {
-	// mitPort should be even
-	if ( minPort % 2 )
-		minPort++;
-
-	//Check port range is possitive
-	if (!minPort || maxPort<=minPort)
-		//Error
-		return Error("-RTPTransport::SetPortRange() | port range invalid [%d,%d]\n",minPort,maxPort);
-
-	//check min range ports
-	if (maxPort && maxPort-minPort<minLocalPortRange)
-	{
-		//Error
-		Error("-RTPTransport::SetPortRange() | port range too short %d, should be at least %d\n",maxPort-minPort,minLocalPortRange);
-		//Correct
-		maxPort = minPort+minLocalPortRange;
-	}
-
-	//check min range
-	if (minPort && minPort<1024)
-	{
-		//Error
-		Error("-RTPTransport::SetPortRange() | min rtp port is inside privileged range, increasing it\n");
-		//Correct it
-		minPort = 1024;
-	}
-
-	//Check max port
-	if (maxPort>65535)
-	{
-		//Error
-		Error("-RTPTransport::SetPortRange() | max rtp port is too high, decreasing it\n");
-		//Correc it
-		maxPort = 65535;
-	}
-
 	//Set range
 	minLocalPort = minPort;
 	maxLocalPort = maxPort;
